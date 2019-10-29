@@ -42,9 +42,14 @@ def tri3e(ex,ey,D,th,eq=None):
     cyclic_ijk = [0,1,2,0,1]      # Cyclic permutation of the nodes i,j,k
 
     # TODO: fill out missing parts (or reformulate completely)
+    zeta_px, zeta_py = zeta_partials_x_and_y(ex, ey)
 
-    Ke = np.mat(np.zeros((6, 6)))
-
+    B = np.mat(np.zeros((3,6)))
+    for i in range(3):
+        B[:,i * 2] = np.array([[zeta_py[i]], [0], [zeta_px[i]]])
+        B[:,i * 2 + 1] = np.array([[0], [zeta_px[i]], [zeta_py[i]]])
+    
+    Ke = A * th * B.T * D * B
     if eq is None:
         return Ke
     else:
@@ -73,8 +78,8 @@ def zeta_partials_x_and_y(ex,ey):
     for i in range(3):
         j = (i + 1) % 3
         k = (i + 2) % 3
-        zeta_px[i] = (y[j] - y[k]) / A2
-        zeta_py[i] = (x[k] - x[j]) / A2 
+        zeta_px[i] = (ey[j] - ey[k]) / A2
+        zeta_py[i] = (ex[k] - ex[j]) / A2 
 
     return zeta_px, zeta_py
 
