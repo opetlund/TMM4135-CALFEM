@@ -74,7 +74,7 @@ def zeta_partials_x_and_y(ex,ey):
         j = (i + 1) % 3
         k = (i + 2) % 3
         zeta_px[i] = (y[j] - y[k]) / A2
-        zeta_py[i] = (y[k] - x[j]) / A2 
+        zeta_py[i] = (x[k] - x[j]) / A2 
 
     return zeta_px, zeta_py
 
