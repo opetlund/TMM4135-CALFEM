@@ -103,12 +103,15 @@ def tri6_area(ex, ey):
 
 
 def tri6_shape_functions(zeta):
-
+    # Assumes zeta = [zeta1 zeta2 zeta3]
     cyclic_ijk = [0, 1, 2, 0, 1]      # Cyclic permutation of the nodes i,j,k
 
     N6 = np.zeros(6)
 
-    # TODO: fill out missing parts (or reformulate completely)
+    for i in range(3):
+        N6[i] = 2 * zeta[i] * (zeta[i] - 0.5)
+        j = (i + 1) % 3
+        N6[i + 3] = 4 * zeta[i] * zeta[j]
 
     return N6
 
@@ -122,8 +125,12 @@ def tri6_shape_function_partials_x_and_y(zeta, ex, ey):
 
     cyclic_ijk = [0, 1, 2, 0, 1]      # Cyclic permutation of the nodes i,j,k
 
-    # TODO: fill out missing parts (or reformulate completely)
-
+    for i in range(3):
+        j = (i + 1) % 3
+        N6_px[i] = (4 * zeta[i] - 1) * zeta_px[i]
+        N6_py[i] = (4 * zeta[i] - 1) * zeta_py[i]
+        N6_px[i + 3] = 4 * (zeta[i] * zeta_px[j] + zeta[j] * zeta_px[i])
+        N6_py[i + 3] = 4 * (zeta[i] * zeta_py[j] + zeta[j] * zeta_py[i])
     return N6_px, N6_py
 
 
