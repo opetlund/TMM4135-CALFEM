@@ -70,7 +70,11 @@ def zeta_partials_x_and_y(ex,ey):
     zeta_px = np.zeros(3)           # Partial derivative with respect to x
     zeta_py = np.zeros(3)           # Partial derivative with respect to y
 
-    # TODO: fill out missing parts (or reformulate completely)
+    for i in range(3):
+        j = (i + 1) % 3
+        k = (i + 2) % 3
+        zeta_px[i] = (y[j] - y[k]) / A2
+        zeta_py[i] = (y[k] - x[j]) / A2 
 
     return zeta_px, zeta_py
 
