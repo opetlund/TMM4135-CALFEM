@@ -196,12 +196,16 @@ for i in range(numNodesY):
     R[-(i*2+1), 0] = endLoadXY[1] / numNodesY
 
 # Choose which solution to use
-ourSolution = True
+ourSolution = False
 
 for iel in range(numElements):
     if ourSolution:
         if numElementNodes == 3:
             K_el, f_el = tri.tri3e(ex[iel], ey[iel], Dmat, thickness, eq)
+            # K_el_s, f_el_s = cfc.plante(ex[iel], ey[iel], ep, Dmat, eq)
+            # f_el_s = f_el_s.T
+            # f_error = np.max(np.abs(f_el - f_el_s))
+            # K_error = np.max(np.abs(K_el - K_el_s))
         elif numElementNodes == 6:
             K_el, f_el = tri.tri6e(ex[iel], ey[iel], Dmat, thickness, eq)
         elif numElementNodes == 4:
@@ -210,10 +214,10 @@ for iel in range(numElements):
             K_el, f_el = quad.quad9e(ex[iel], ey[iel], Dmat, thickness, eq)
     else:
         if numElementNodes == 3:
-            # Tror dette tilsvarer tri.tri3e(..), men den fungerer ikke helt
-            # Eller samme som tri.plante(..)
+            # core version of plante /tri3el
             K_el, f_el = cfc.plante(ex[iel], ey[iel], ep, Dmat, eq)
-
+            # Transpose so correct dim for assem
+            f_el = f_el.T
     cfc.assem(eldofs[iel], K, K_el, R, f_el)
 
 r, R0 = cfc.solveq(K, R, bc)

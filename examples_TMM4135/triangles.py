@@ -49,8 +49,8 @@ def tri3e(ex, ey, D, th, eq=None):
     B = np.mat(np.zeros((3, 6)))
     # Set columns of B
     for i in range(3):
-        B[:, i * 2] = np.array([[zeta_py[i]], [0], [zeta_px[i]]])
-        B[:, i * 2 + 1] = np.array([[0], [zeta_px[i]], [zeta_py[i]]])
+        B[:, i * 2] = np.array([[zeta_px[i]], [0], [zeta_py[i]]])
+        B[:, i * 2 + 1] = np.array([[0], [zeta_py[i]], [zeta_px[i]]])
 
     # Compute element stifness matrix
     Ke = A * th * B.T * D * B
