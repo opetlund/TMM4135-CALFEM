@@ -42,8 +42,6 @@ def tri3e(ex, ey, D, th, eq=None):
 
     cyclic_ijk = [0, 1, 2, 0, 1]      # Cyclic permutation of the nodes i,j,k
 
-    # TODO: fill out missing parts (or reformulate completely)
-    # TODO: Compute fe
     zeta_px, zeta_py = zeta_partials_x_and_y(ex, ey)
 
     B = np.mat(np.zeros((3, 6)))
@@ -57,7 +55,9 @@ def tri3e(ex, ey, D, th, eq=None):
     if eq is None:
         return Ke
     else:
-        fe = np.mat(np.zeros((6, 1)))
+        fx = A * th * eq[0] / 3.0
+        fy = A * th * eq[1] / 3.0
+        fe = np.mat([[fx], [fy], [fx], [fy], [fx], [fy]])
         return Ke, fe
 
 
@@ -140,24 +140,45 @@ def tri6_Bmatrix(zeta, ex, ey):
 
     Bmatrix = np.matrix(np.zeros((3, 12)))
 
-    # TODO: fill out missing parts (or reformulate completely)
+    for i in range(6):
+        Bmatrix[:, i * 2] = np.array([[nx[i]], [0], [ny[i]]])
+        Bmatrix[:, i * 2 + 1] = np.array([[0], [ny[i]], [nx[i]]])
 
     return Bmatrix
 
 
+def tri6_Jacobian(zeta, ex, ey):
+
+    nx, ny = tri6_shape_function_partials_x_and_y(zeta, ex, ey)
+    J = np.zeros((2, 2))
+    for i in range(6):
+        J[0, 0] += nx[i] * ex[i]
+        J[0, 1] += nx[i] * ey[i]
+        J[1, 0] += ny[i] * ex[i]
+        J[1, 1] += ny[i] * ey[i]
+
+    return 0.5 * np.abs(np.linalg.det(J))
+
+
 def tri6_Kmatrix(ex, ey, D, th, eq=None):
 
+    # zeta i values for numerical integration
     zetaInt = np.array([[0.5, 0.5, 0.0],
                         [0.0, 0.5, 0.5],
                         [0.5, 0.0, 0.5]])
-
+    # Weights for numerical integration
     wInt = np.array([1.0/3.0, 1.0/3.0, 1.0/3.0])
 
     A = tri6_area(ex, ey)
 
+    # Jacobian
+
     Ke = np.matrix(np.zeros((12, 12)))
 
-    # TODO: fill out missing parts (or reformulate completely)
+    # Numerical integration with Gauss quadrature for triangle element
+    for i in range(len(wInt)):
+        B = tri6_Bmatrix(zetaInt[:, i], ex, ey)
+        Ke = Ke + wInt[i] * B.T * D * B * tri6_Jacobian(zetaInt[:, i], ex, ey)
 
     if eq is None:
         return Ke

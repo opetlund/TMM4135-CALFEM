@@ -196,7 +196,7 @@ for i in range(numNodesY):
     R[-(i*2+1), 0] = endLoadXY[1] / numNodesY
 
 # Choose which solution to use
-ourSolution = False
+ourSolution = True
 
 for iel in range(numElements):
     if ourSolution:
