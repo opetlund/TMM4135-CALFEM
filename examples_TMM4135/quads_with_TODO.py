@@ -40,12 +40,8 @@ def gauss_points(iRule):
     return gauss_position[idx], gauss_weight[idx]
 
 
-<<<<<<< HEAD
 def quad4_shapefuncs(xsi, eta):
-=======
-
-def quad4_shapefuncs(ksi, eta):
->>>>>>> 73f9d57e57d1d85d579c3119e9d1f64e2957c1f7
+    
     """
     Calculates shape functions evaluated at xi, eta
     """
@@ -160,7 +156,23 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
             #TODO: Fill out correct values for displacement interpolation xsi and eta
             N2 = np.zeros((2,8))
+            N4matrix = np.zeros((2,8))
+            # N4matrix =[[N4 , 0],
+            #            [0 , N4]]
+            N4matrix[0, :4] = quad4_shapefuncs(xsi, eta)
+            N4matrix[1, 4:] = quad4_shapefuncs(xsi, eta)
+            '''
+            Not correct yet as we do not have eu anv ev
+            def displacement(eu, ev):
+                # make N2
+                # assume eu as [u1, u2, u3, u4], and same for ev
+                uvvector = np.zeros(8)
+                uvvector[:4] = eu
+                uvvector[4:] = ev
+                # [u1, u2, ... , v3, v4]
 
+                return N4matrix @ (uvvector.T) #2x8-vector N2 = [[u(ksi, eta)], [v(ksi, eta)]]
+            '''
 
             # Evaluates integrand at current integration points and adds to final solution
             Ke += (B.T) @ D @ B * detJ * t * gw[iGauss] * gw[jGauss]
