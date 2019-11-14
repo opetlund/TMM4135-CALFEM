@@ -82,12 +82,12 @@ def quad4_shapefuncs_grad_eta(xsi, eta):
     Ndeta[3] = 0.25 * (-1 + xsi)
     return Ndeta
 
-def make_B_matrix(nx, ny):
+def make_B_matrix(Nmatrix):
     Bmatrix = np.matrix(np.zeros((3, 8)))
 
     for i in range(4):
-        Bmatrix[:, i * 2] = np.array([[nx[i]], [0], [ny[i]]])
-        Bmatrix[:, i * 2 + 1] = np.array([[0], [ny[i]], [nx[i]]])
+        Bmatrix[:, i * 2] = np.array([[Nmatrix[0, i]], [0], [Nmatrix[1, i]]])
+        Bmatrix[:, i * 2 + 1] = np.array([[0], [Nmatrix[1, i]], [Nmatrix[0, i]]])
     return Bmatrix
 
 
@@ -151,7 +151,12 @@ def quad4e(ex, ey, D, thickness, eq=None):
             # Strain displacement matrix calculated at position xsi, eta
 
             #TODO: Fill out correct values for strain displacement matrix at current xsi and eta
-            B = make_B_matrix(Ndxsi, Ndeta)
+            Nmatrix = np.zeros((2,4))
+            Nmatrix[0, :] = Ndxsi[:]
+            Nmatrix[1, :] = Ndeta[:]
+
+            Ndxy = np.matmul(invJ, Nmatrix) #Transform N-matrix derived wrt. xsi and eta to x and y
+            B = make_B_matrix(Ndxy)
 
 
             #TODO: Fill out correct values for displacement interpolation xsi and eta
