@@ -7,7 +7,7 @@ Created on Sun Oct 21 16:38:14 2018
 import numpy as np
 import calfem.core as cfc
 import triangles as tri
-import quads as quad
+import quads_with_TODO as quad
 import calfem.vis as cfv
 
 # Element Type
