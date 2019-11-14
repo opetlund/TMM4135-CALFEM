@@ -11,8 +11,10 @@ import quads_with_TODO as quad
 import calfem.vis as cfv
 
 # Element Type
-
 numElementNodes = 4  # Valid numbers 3, 4, 6, 9
+
+# Choose which solution to use
+ourSolution = False
 
 elTypeInfo = [-1, 'Unknown elementtype']
 
@@ -195,8 +197,6 @@ for i in range(numNodesY):
     R[-(i*2+2), 0] = endLoadXY[0] / numNodesY
     R[-(i*2+1), 0] = endLoadXY[1] / numNodesY
 
-# Choose which solution to use
-ourSolution = True
 
 for iel in range(numElements):
     if ourSolution:
@@ -218,6 +218,13 @@ for iel in range(numElements):
             K_el, f_el = cfc.plante(ex[iel], ey[iel], ep, Dmat, eq)
             # Transpose so correct dim for assem
             f_el = f_el.T
+        elif numElementNodes == 4:
+            # Number of intergration points. 1, 2 or 3
+            n = 2
+            ep = np.array([ep[0], ep[1], n])
+            K_el, f_el = cfc.plani4e(ex[iel], ey[iel], ep, Dmat, eq)
+            f_el = f_el.T
+
     cfc.assem(eldofs[iel], K, K_el, R, f_el)
 
 r, R0 = cfc.solveq(K, R, bc)

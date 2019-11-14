@@ -2835,7 +2835,7 @@ def plani4e(ex,ey,ep,D,eq=None):
     t=ep[1]  
     ir=ep[2]  
     ngp=ir*ir
-    if eq == None:
+    if eq is None:
         q = np.zeros((2,1))
     else:
         q = np.reshape(eq, (2,1))
