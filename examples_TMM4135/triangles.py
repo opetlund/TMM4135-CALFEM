@@ -134,7 +134,7 @@ def tri6_shape_function_partials_x_and_y(zeta, ex, ey):
     return N6_px, N6_py
 
 
-def tri6_Bmatrix(zeta, ex, ey):
+def tri6_Bmatrix_old(zeta, ex, ey):
 
     nx, ny = tri6_shape_function_partials_x_and_y(zeta, ex, ey)
 
@@ -147,7 +147,7 @@ def tri6_Bmatrix(zeta, ex, ey):
     return Bmatrix
 
 
-def tri6_Jacobian(zeta, ex, ey):
+def tri6_Jacobian_old(zeta, ex, ey):
 
     nx, ny = tri6_shape_function_partials_x_and_y(zeta, ex, ey)
     J = np.zeros((2, 2))
@@ -158,6 +158,71 @@ def tri6_Jacobian(zeta, ex, ey):
         J[1, 1] += ny[i] * ey[i]
 
     return 0.5 * np.abs(np.linalg.det(J))
+
+
+def tri6_shape_functions_partials_ksi_and_ny(zeta):
+    ksi = zeta[0]
+    ny = zeta[1]
+    N_ksi = np.zeros(6)
+    N_ny = np.zeros(6)
+    N_ksi[0] = 4 * ksi - 1
+    N_ny[1] = 4 * ny - 1
+    N_ksi[2] = -3 + 2 * ny + 4 * ksi
+    N_ny[2] = -3 + 2 * ksi + 4 * ny
+    N_ksi[3] = 4 * ny
+    N_ny[3] = 4 * ksi
+    N_ksi[4] = -4 * ny
+    N_ny[4] = 4 - 4 * ksi - 8 * ny
+    N_ksi[5] = 4 - 8 * ksi - 4 * ny
+    N_ny[5] = -4 * ksi
+    return N_ksi, N_ny
+
+
+def tri6_Jacobian(P, X):
+    J = np.matmul(P, X)
+    return J
+
+
+def tri6_Bmatrix(J, P):
+    N_x_y = np.matmul(np.linalg.inv(J), P)
+    B = np.zeros((3, 12))
+    for i in range(6):
+        # B[:, i * 2] = np.array([[N_x_y[0, i]], [0], [N_x_y[1, i]]])
+        # B[:, i * 2 + 1] = np.array([[0], [N_x_y[1, i]], [N_x_y[0, i]]])
+        B[:, i * 2] = np.array([N_x_y[0, i], 0, N_x_y[1, i]])
+        B[:, i * 2 + 1] = np.array([0, N_x_y[1, i], N_x_y[0, i]])
+
+    return B
+
+
+def tri6_Kmatrix_old(ex, ey, D, th, eq=None):
+
+    # zeta i values for numerical integration
+    zetaInt = np.array([[0.5, 0.5, 0.0],
+                        [0.0, 0.5, 0.5],
+                        [0.5, 0.0, 0.5]])
+    # Weights for numerical integration
+    wInt = np.array([1.0/3.0, 1.0/3.0, 1.0/3.0])
+
+    A = tri6_area(ex, ey)
+
+    # Jacobianx
+
+    Ke = np.matrix(np.zeros((12, 12)))
+
+    # Numerical integration with Gauss quadrature for triangle element
+    for i in range(len(wInt)):
+        B = tri6_Bmatrix(zetaInt[:, i], ex, ey)
+        Ke = Ke + wInt[i] * B.T * D * B * tri6_Jacobian(zetaInt[:, i], ex, ey)
+
+    if eq is None:
+        return Ke
+    else:
+        fe = np.matrix(np.zeros((12, 1)))
+
+        # TODO: fill out missing parts (or reformulate completely)
+
+        return Ke, fe
 
 
 def tri6_Kmatrix(ex, ey, D, th, eq=None):
@@ -175,10 +240,24 @@ def tri6_Kmatrix(ex, ey, D, th, eq=None):
 
     Ke = np.matrix(np.zeros((12, 12)))
 
+    X = np.zeros((6, 2))
+    X[:, 0] = ex
+    X[:, 1] = ey
+    P = np.zeros((2, 6))
+    print("X")
+    print(X)
     # Numerical integration with Gauss quadrature for triangle element
     for i in range(len(wInt)):
-        B = tri6_Bmatrix(zetaInt[:, i], ex, ey)
-        Ke = Ke + wInt[i] * B.T * D * B * tri6_Jacobian(zetaInt[:, i], ex, ey)
+        N_ksi, N_ny = tri6_shape_functions_partials_ksi_and_ny(zetaInt[:, i])
+        P[0, :] = N_ksi
+        P[1, :] = N_ny
+        J = tri6_Jacobian(P, X)
+        print("P")
+        print(P)
+        print("J")
+        print(J)
+        B = tri6_Bmatrix(J, P)
+        Ke = Ke + wInt[i] * B.T * D * B * np.linalg.det(J)
 
     if eq is None:
         return Ke
