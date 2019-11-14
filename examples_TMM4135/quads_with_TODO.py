@@ -61,13 +61,12 @@ def quad4_shapefuncs_grad_xsi(xsi, eta):
     # ----- Derivatives of shape functions with respect to xsi -----
     # TODO: fill inn values of the  shape functions gradients with respect to xsi
 
-    Ndxi = np.zeros(4)
-    Ndeta = np.zeros(4)
-    Ndeta[0] = 0.25 * (1 + eta)
-    Ndeta[1] = 0.25 * (1 - eta)
-    Ndeta[2] = 0.25 * (-1 - eta)
-    Ndeta[3] = 0.25 * (-1 + eta)
-    return Ndxi
+    Ndxsi = np.zeros(4)
+    Ndxsi[0] = 0.25 * (1 + eta)
+    Ndxsi[1] = 0.25 * (-1 - eta)
+    Ndxsi[2] = 0.25 * (1 - eta)
+    Ndxsi[3] = 0.25 * (-1 + eta)
+    return Ndxsi
 
 
 def quad4_shapefuncs_grad_eta(ksi, eta):
@@ -84,9 +83,9 @@ def quad4_shapefuncs_grad_eta(ksi, eta):
     return Ndeta
 
 def make_B_matrix(nx, ny):
-    Bmatrix = np.matrix(np.zeros((3, 12)))
+    Bmatrix = np.matrix(np.zeros((3, 8)))
 
-    for i in range(8):
+    for i in range(4):
         Bmatrix[:, i * 2] = np.array([[nx[i]], [0], [ny[i]]])
         Bmatrix[:, i * 2 + 1] = np.array([[0], [ny[i]], [nx[i]]])
     return Bmatrix
@@ -141,6 +140,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
             #TODO: Calculate Jacobian, inverse Jacobian and determinant of the Jacobian
             J = np.matmul(G,H) #TODO: Correct this
+            print("printing J: ", J)
             invJ = np.linalg.inv(J)  # Inverse of Jacobian
             detJ = np.linalg.det(J)  # Determinant of Jacobian
 
@@ -160,7 +160,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
             # Evaluates integrand at current integration points and adds to final solution
             Ke += (B.T) @ D @ B * detJ * t * gw[iGauss] * gw[jGauss]
-            fe += (N2.T) @ f    * detJ * t * gw[iGauss] * gw[jGauss]
+            #fe += (N2.T) @ f    * detJ * t * gw[iGauss] * gw[jGauss]
 
     return Ke, fe  # Returns stiffness matrix and nodal force vector
 
