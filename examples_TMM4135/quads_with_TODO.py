@@ -40,18 +40,22 @@ def gauss_points(iRule):
     return gauss_position[idx], gauss_weight[idx]
 
 
+<<<<<<< HEAD
+def quad4_shapefuncs(xsi, eta):
+=======
 
 def quad4_shapefuncs(ksi, eta):
+>>>>>>> 73f9d57e57d1d85d579c3119e9d1f64e2957c1f7
     """
     Calculates shape functions evaluated at xi, eta
     """
     # ----- Shape functions -----
     # TODO: fill inn values of the  shape functions
     N4 = np.zeros(4)
-    N4[0] = 0.25 * (1 + ksi) * (1 + eta)
-    N4[1] = 0.25 * (1 - ksi) * (1 + eta)
-    N4[2] = 0.25 * (1 + ksi) * (1 - eta)
-    N4[3] = 0.25 * (1 - ksi) * (1 - eta)
+    N4[0] = 0.25 * (1 + xsi) * (1 + eta)
+    N4[1] = 0.25 * (1 - xsi) * (1 + eta)
+    N4[2] = 0.25 * (1 + xsi) * (1 - eta)
+    N4[3] = 0.25 * (1 - xsi) * (1 - eta)
     return N4
 
 def quad4_shapefuncs_grad_xsi(xsi, eta):
@@ -69,17 +73,17 @@ def quad4_shapefuncs_grad_xsi(xsi, eta):
     return Ndxsi
 
 
-def quad4_shapefuncs_grad_eta(ksi, eta):
+def quad4_shapefuncs_grad_eta(xsi, eta):
     """
     Calculates derivatives of shape functions wrt. eta
     """
     # ----- Derivatives of shape functions with respect to eta -----
     # TODO: fill inn values of the  shape functions gradients with respect to xsi
     Ndeta = np.zeros(4)
-    Ndeta[0] = 0.25 * (1 + ksi)
-    Ndeta[1] = 0.25 * (1 - ksi)
-    Ndeta[2] = 0.25 * (-1 - ksi)
-    Ndeta[3] = 0.25 * (-1 + ksi)
+    Ndeta[0] = 0.25 * (1 + xsi)
+    Ndeta[1] = 0.25 * (1 - xsi)
+    Ndeta[2] = 0.25 * (-1 - xsi)
+    Ndeta[3] = 0.25 * (-1 + xsi)
     return Ndeta
 
 def make_B_matrix(nx, ny):
