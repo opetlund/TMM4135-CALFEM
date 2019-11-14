@@ -49,7 +49,7 @@ def quad4e(ex,ey,D,th,eq=None):
     xyvector[:4] = ex
     xyvector[4:] = ey
 
-    xy = N4matrix * xyvector.T #vector xy = [x(ksi, eta), y(ksi, eta)]
+    xy = N4matrix * xyvector.T #vector xy = [[x(ksi, eta)], [y(ksi, eta)]]
 
     def offset(eu, ev):
         # assume u as [u1, u2, u3, u4], and same for v
@@ -58,7 +58,7 @@ def quad4e(ex,ey,D,th,eq=None):
         uvvector[4:] = ev
         # [u1, u2, ... , v3, v4]
 
-        return N4matrix * uvvector.T #vector uv = [u(ksi, eta), v(ksi, eta)]
+        return N4matrix @ uvvector.T #vector uv = [[u(ksi, eta)], [v(ksi, eta)]]
 
 
 
