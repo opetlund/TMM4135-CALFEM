@@ -5,7 +5,6 @@ Created on Sun Oct 21 08:15:51 2018
 @author: bjohau
 """
 import numpy as np
-from sympy import symbols, diff
 import sys
 
 def gauss_points(iRule):
@@ -39,6 +38,7 @@ def gauss_points(iRule):
 
     idx = iRule - 1
     return gauss_position[idx], gauss_weight[idx]
+
 
 
 def quad4_shapefuncs(ksi, eta):
@@ -83,7 +83,13 @@ def quad4_shapefuncs_grad_eta(ksi, eta):
     Ndeta[3] = 0.25 * (-1 + ksi)
     return Ndeta
 
+def make_B_matrix(nx, ny):
+    Bmatrix = np.matrix(np.zeros((3, 12)))
 
+    for i in range(8):
+        Bmatrix[:, i * 2] = np.array([[nx[i]], [0], [ny[i]]])
+        Bmatrix[:, i * 2 + 1] = np.array([[0], [ny[i]], [nx[i]]])
+    return Bmatrix
 
 
 def quad4e(ex, ey, D, thickness, eq=None):
@@ -145,10 +151,12 @@ def quad4e(ex, ey, D, thickness, eq=None):
             # Strain displacement matrix calculated at position xsi, eta
 
             #TODO: Fill out correct values for strain displacement matrix at current xsi and eta
-            B  = np.zeros((3,8))
+            B = make_B_matrix(Ndxsi, Ndeta)
+
 
             #TODO: Fill out correct values for displacement interpolation xsi and eta
             N2 = np.zeros((2,8))
+
 
             # Evaluates integrand at current integration points and adds to final solution
             Ke += (B.T) @ D @ B * detJ * t * gw[iGauss] * gw[jGauss]
