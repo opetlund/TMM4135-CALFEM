@@ -107,7 +107,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
     Returns:
 
         Ke : element stiffness matrix (8 x 8)
-        fe : equivalent nodal forces (4 x 1)
+        fe : equivalent nodal forces (8 x 1)
 
     """
     t = thickness
@@ -151,12 +151,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
             # Strain displacement matrix calculated at position xsi, eta
 
             #TODO: Fill out correct values for strain displacement matrix at current xsi and eta
-            Nmatrix = np.zeros((2,4))
-            Nmatrix[0, :] = Ndxsi[:]
-            Nmatrix[1, :] = Ndeta[:]
-
-            Ndxy = np.matmul(invJ, Nmatrix) #Transform N-matrix derived wrt. xsi and eta to x and y
-            B = make_B_matrix(Ndxy)
+            B = make_B_matrix(dN)
 
 
             #TODO: Fill out correct values for displacement interpolation xsi and eta
@@ -231,6 +226,3 @@ def quad9e(ex,ey,D,th,eq=None):
 
 
 
-
-
-  
