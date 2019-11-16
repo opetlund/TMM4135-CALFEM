@@ -185,6 +185,26 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
     return Ke, fe  # Returns stiffness matrix and nodal force vector
 
+#---------------------------- quad9 -----------------------------------
+
+def quad9_shapefuncs(xsi, eta):
+    
+    """
+    Calculates shape functions evaluated at xi, eta
+    """
+    # ----- Shape functions -----
+    N9 = np.zeros(9)
+    N9[0] = 0.25 * (xsi**2 + xsi) * (eta**2 + eta)
+    N9[1] = 0.25 * (xsi**2 - xsi) * (eta**2 + eta)
+    N9[2] = 0.25 * (xsi**2 - xsi) * (eta**2 - eta)
+    N9[3] = 0.25 * (xsi**2 + xsi) * (eta**2 - eta)
+    N9[4] = 0.50 * (1- xsi**2)    * (eta**2 + eta)
+    N9[5] = 0.50 * (xsi**2 - xsi) * (1 - eta**2)
+    N9[6] = 0.50 * (1- xsi**2)    * (eta**2 - eta)
+    N9[7] = 0.50 * (xsi**2 + xsi) * (1 - eta**2)
+    N9[8] =        (1- xsi**2)    * (1 - eta**2)
+    return N9
+
 
 def quad9e(ex,ey,D,th,eq=None):
     """
