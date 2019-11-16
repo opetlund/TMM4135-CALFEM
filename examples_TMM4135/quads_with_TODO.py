@@ -193,13 +193,45 @@ def quad9_shapefuncs(xsi, eta):
     N9[1] = 0.25 * (xsi**2 - xsi) * (eta**2 + eta)
     N9[2] = 0.25 * (xsi**2 - xsi) * (eta**2 - eta)
     N9[3] = 0.25 * (xsi**2 + xsi) * (eta**2 - eta)
-    N9[4] = 0.50 * (1- xsi**2)    * (eta**2 + eta)
+    N9[4] = 0.50 * (1 - xsi**2)   * (eta**2 + eta)
     N9[5] = 0.50 * (xsi**2 - xsi) * (1 - eta**2)
-    N9[6] = 0.50 * (1- xsi**2)    * (eta**2 - eta)
+    N9[6] = 0.50 * (1 - xsi**2)   * (eta**2 - eta)
     N9[7] = 0.50 * (xsi**2 + xsi) * (1 - eta**2)
-    N9[8] =        (1- xsi**2)    * (1 - eta**2)
+    N9[8] =        (1 - xsi**2)   * (1 - eta**2)
     return N9
 
+def quad9_shapefuncs_grad_xsi(xsi, eta):
+    """
+    Calculates derivatives of shape functions wrt. xsi
+    """
+    # ----- Derivatives of shape functions with respect to xsi -----
+    Ndxsi = np.zeros(9)
+    Ndxsi[0] = 0.25 * (2*xsi + 1) * (eta**2 + eta)
+    Ndxsi[1] = 0.25 * (2*xsi - 1) * (eta**2 + eta)
+    Ndxsi[2] = 0.25 * (2*xsi - 1) * (eta**2 - eta)
+    Ndxsi[3] = 0.25 * (2*xsi + 1) * (eta**2 - eta)
+    Ndxsi[4] = 0.50 * (-2*xsi)    * (eta**2 + eta)
+    Ndxsi[5] = 0.50 * (2*xsi - 1) * (1 - eta**2)
+    Ndxsi[6] = 0.50 * (-2*xsi)    * (eta**2 - eta)
+    Ndxsi[7] = 0.50 * (2*xsi + 1) * (1 - eta**2)
+    Ndxsi[8] =        (-2*xsi)    * (1 - eta**2)
+    return Ndxsi
+
+def quad9_shapefuncs_grad_eta(xsi, eta):
+    """
+    Calculates derivatives of shape functions wrt. eta
+    """
+    Ndeta = np.zeros(9)
+    Ndeta[0] = 0.25 * (xsi**2 + xsi) * (2*eta + 1)
+    Ndeta[1] = 0.25 * (xsi**2 - xsi) * (2*eta + 1)
+    Ndeta[2] = 0.25 * (xsi**2 - xsi) * (2*eta - 1)
+    Ndeta[3] = 0.25 * (xsi**2 + xsi) * (2*eta - 1)
+    Ndeta[4] = 0.50 * (1 - xsi**2)   * (2*eta + 1)
+    Ndeta[5] = 0.50 * (xsi**2 - xsi) * (-2*eta)
+    Ndeta[6] = 0.50 * (1 - xsi**2)   * (2*eta - 1)
+    Ndeta[7] = 0.50 * (xsi**2 + xsi) * (-2*eta)
+    Ndeta[8] =        (1 - xsi**2)   * (-2*eta)
+    return Ndeta
 
 def quad9e(ex,ey,D,th,eq=None):
     """
