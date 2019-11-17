@@ -82,10 +82,10 @@ def quad4_shapefuncs_grad_eta(xsi, eta):
     Ndeta[3] = 0.25 * (-1 + xsi)
     return Ndeta
 
-def make_B_matrix(Nmatrix):
-    Bmatrix = np.matrix(np.zeros((3, 8)))
+def make_B_matrix(Nmatrix, number_of_nodes):
 
-    for i in range(4):
+    Bmatrix = np.matrix(np.zeros((3, number_of_nodes*2)))
+    for i in range(number_of_nodes):
         Bmatrix[:, i * 2] = np.array([[Nmatrix[0, i]], [0], [Nmatrix[1, i]]])
         Bmatrix[:, i * 2 + 1] = np.array([[0], [Nmatrix[1, i]], [Nmatrix[0, i]]])
     return Bmatrix
@@ -251,10 +251,68 @@ def quad9e(ex,ey,D,th,eq=None):
 
     # TODO: fill out missing parts (or reformulate completely)
 
+    numGaussPoints = 2  # Number of integration points
+    gp, gw = gauss_points(numGaussPoints)  # Get integration points and -weight
+
+    for iGauss in range(numGaussPoints):  # Solves for K and fe at all integration points
+        for jGauss in range(numGaussPoints):
+            xsi = gp[iGauss]
+            eta = gp[jGauss]
+
+            Ndxsi = quad9_shapefuncs_grad_xsi(xsi, eta)
+            Ndeta = quad9_shapefuncs_grad_eta(xsi, eta)
+            N1 = quad9_shapefuncs(xsi, eta)  # Collect shape functions evaluated at xi and eta
+
+            # Matrix H and G defined according to page 52 of Waløens notes
+            H = np.transpose([ex, ey])  # Collect global x- and y coordinates in one matrix
+            G = np.array([Ndxsi, Ndeta])  # Collect gradients of shape function evaluated at xi and eta
+
+            # TODO: Calculate Jacobian, inverse Jacobian and determinant of the Jacobian
+            J = np.matmul(G, H)  # TODO: Correct this
+            print("printing J: ", J)
+            invJ = np.linalg.inv(J)  # Inverse of Jacobian
+            detJ = np.linalg.det(J)  # Determinant of Jacobian
+
+            dN = invJ @ G  # Derivatives of shape functions with respect to x and y
+            dNdx = dN[0]
+            dNdy = dN[1]
+
+            # Strain displacement matrix calculated at position xsi, eta
+
+            # TODO: Fill out correct values for strain displacement matrix at current xsi and eta
+            B = make_B_matrix(dN, 9)
+
+            # TODO: Fill out correct values for displacement interpolation xsi and eta
+            N2 = np.zeros((2, 8))
+            N4matrix = np.zeros((2, 8))
+            # N4matrix =[[N4 , 0],
+            #            [0 , N4]]
+            N4matrix[0, :4] = quad4_shapefuncs(xsi, eta)
+            N4matrix[1, 4:] = quad4_shapefuncs(xsi, eta)
+            '''
+            Not correct yet as we do not have eu anv ev
+            def displacement(eu, ev):
+                # make N2
+                # assume eu as [u1, u2, u3, u4], and same for ev
+                uvvector = np.zeros(8)
+                uvvector[:4] = eu
+                uvvector[4:] = ev
+                # [u1, u2, ... , v3, v4]
+
+                return N4matrix @ (uvvector.T) #2x8-vector N2 = [[u(ksi, eta)], [v(ksi, eta)]]
+            '''
+
+            # Evaluates integrand at current integration points and adds to final solution
+            Ke += (B.T) @ D @ B * detJ * th * gw[iGauss] * gw[jGauss]
+            # fe += (N2.T) @ f    * detJ * t * gw[iGauss] * gw[jGauss]
+
     if eq is None:
         return Ke
     else:
         return Ke, fe
+
+
+
 
 
 
