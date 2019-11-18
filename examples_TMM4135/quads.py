@@ -41,8 +41,8 @@ def quad4e(ex,ey,D,th,eq=None):
     N4matrix = np.zeros((2,8))
     # N4matrix =[[N4 , 0],
     #            [0 , N4]]
-    N4matrix[0, :4] = N4
-    N4matrix[1, 4:] = N4
+    N4matrix[0, :4] = quad4_shape_function(ksi, eta)
+    N4matrix[1, 4:] = quad4_shape_function(ksi, eta)
 
     xyvector = np.zeros(8) 
     # [x1, x2, ... , y3, y4]

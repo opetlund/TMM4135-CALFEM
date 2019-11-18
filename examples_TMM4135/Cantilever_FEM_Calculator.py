@@ -11,10 +11,10 @@ import quads_with_TODO as quad
 import calfem.vis as cfv
 
 # Element Type
-numElementNodes = 4  # Valid numbers 3, 4, 6, 9
+numElementNodes = 9  # Valid numbers 3, 4, 6, 9
 
 # Choose which solution to use
-ourSolution = False
+ourSolution = True
 
 elTypeInfo = [-1, 'Unknown elementtype']
 
@@ -52,8 +52,8 @@ else:
 bDrawMesh = True
 
 # Cantilever with dimensions H x L x thickness
-H = 2.0
-L = 10.0
+H = 2.5
+L = 12.5
 thickness = 0.1
 
 # Distributed load in x and y, load pr unit area

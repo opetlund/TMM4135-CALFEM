@@ -6,7 +6,7 @@ Created on Sun Oct 21 16:38:14 2018
 """
 import numpy as np
 import calfem.core as cfc
-import quads as quads
+import quads_with_TODO as quads
 import calfem.vis as cfv
 
 nElx = 40

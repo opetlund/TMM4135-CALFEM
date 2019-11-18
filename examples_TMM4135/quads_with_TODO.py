@@ -140,7 +140,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
             #TODO: Calculate Jacobian, inverse Jacobian and determinant of the Jacobian
             J = np.matmul(G,H) #TODO: Correct this
-            print("printing J: ", J)
+            #print("printing J: ", J)
             invJ = np.linalg.inv(J)  # Inverse of Jacobian
             detJ = np.linalg.det(J)  # Determinant of Jacobian
 
@@ -151,7 +151,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
             # Strain displacement matrix calculated at position xsi, eta
 
             #TODO: Fill out correct values for strain displacement matrix at current xsi and eta
-            B = make_B_matrix(dN)
+            B = make_B_matrix(dN, 4)
 
 
             #TODO: Fill out correct values for displacement interpolation xsi and eta
@@ -251,7 +251,7 @@ def quad9e(ex,ey,D,th,eq=None):
 
     # TODO: fill out missing parts (or reformulate completely)
 
-    numGauss Points = 3  # Number of integration points
+    numGaussPoints = 3  # Number of integration points
     gp, gw = gauss_points(numGaussPoints)  # Get integration points and -weight
 
     for iGauss in range(numGaussPoints):  # Solves for K and fe at all integration points
@@ -269,7 +269,7 @@ def quad9e(ex,ey,D,th,eq=None):
 
             # TODO: Calculate Jacobian, inverse Jacobian and determinant of the Jacobian
             J = np.matmul(G, H)  # TODO: Correct this
-            print("printing J: ", J)
+            #print("printing J: ", J)
             invJ = np.linalg.inv(J)  # Inverse of Jacobian
             detJ = np.linalg.det(J)  # Determinant of Jacobian
 
