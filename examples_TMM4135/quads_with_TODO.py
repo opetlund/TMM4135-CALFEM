@@ -50,8 +50,8 @@ def quad4_shapefuncs(xsi, eta):
     N4 = np.zeros(4)
     N4[0] = 0.25 * (1 + xsi) * (1 + eta)
     N4[1] = 0.25 * (1 - xsi) * (1 + eta)
-    N4[2] = 0.25 * (1 + xsi) * (1 - eta)
-    N4[3] = 0.25 * (1 - xsi) * (1 - eta)
+    N4[2] = 0.25 * (1 - xsi) * (1 - eta)
+    N4[3] = 0.25 * (1 + xsi) * (1 - eta)
     return N4
 
 def quad4_shapefuncs_grad_xsi(xsi, eta):
@@ -64,8 +64,8 @@ def quad4_shapefuncs_grad_xsi(xsi, eta):
     Ndxsi = np.zeros(4)
     Ndxsi[0] = 0.25 * (1 + eta)
     Ndxsi[1] = 0.25 * (-1 - eta)
-    Ndxsi[2] = 0.25 * (1 - eta)
-    Ndxsi[3] = 0.25 * (-1 + eta)
+    Ndxsi[2] = 0.25 * (-1 + eta)
+    Ndxsi[3] = 0.25 * (1 - eta)
     return Ndxsi
 
 
@@ -78,8 +78,8 @@ def quad4_shapefuncs_grad_eta(xsi, eta):
     Ndeta = np.zeros(4)
     Ndeta[0] = 0.25 * (1 + xsi)
     Ndeta[1] = 0.25 * (1 - xsi)
-    Ndeta[2] = 0.25 * (-1 - xsi)
-    Ndeta[3] = 0.25 * (-1 + xsi)
+    Ndeta[2] = 0.25 * (-1 + xsi)
+    Ndeta[3] = 0.25 * (-1 - xsi)
     return Ndeta
 
 def make_B_matrix(Nmatrix, number_of_nodes):
@@ -251,7 +251,7 @@ def quad9e(ex,ey,D,th,eq=None):
 
     # TODO: fill out missing parts (or reformulate completely)
 
-    numGaussPoints = 2  # Number of integration points
+    numGauss Points = 3  # Number of integration points
     gp, gw = gauss_points(numGaussPoints)  # Get integration points and -weight
 
     for iGauss in range(numGaussPoints):  # Solves for K and fe at all integration points
