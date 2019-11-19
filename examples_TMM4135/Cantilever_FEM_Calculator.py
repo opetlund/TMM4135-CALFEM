@@ -11,7 +11,7 @@ import quads as quad
 import calfem.vis as cfv
 
 # Element Type
-numElementNodes = 4  # Valid numbers 3, 4, 6, 9
+numElementNodes = 9  # Valid numbers 3, 4, 6, 9
 
 # Choose which solution to use
 ourSolution = True
@@ -30,8 +30,8 @@ elif numElementNodes == 9:
 
 # Number of nodes: Should be odd numbers in order to handle
 
-numNodesX = 21
-numNodesY = 9
+numNodesX = 51
+numNodesY = 25
 
 # number of patches that will fit a 9 node element
 numPatchX = (numNodesX-1) // 2

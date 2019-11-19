@@ -41,12 +41,10 @@ def gauss_points(iRule):
 
 
 def quad4_shapefuncs(xsi, eta):
-    
     """
     Calculates shape functions evaluated at xi, eta
     """
     # ----- Shape functions -----
-    # TODO: fill inn values of the  shape functions
     N4 = np.zeros(4)
     N4[0] = 0.25 * (1 + xsi) * (1 + eta)
     N4[1] = 0.25 * (1 - xsi) * (1 + eta)
@@ -59,8 +57,6 @@ def quad4_shapefuncs_grad_xsi(xsi, eta):
     Calculates derivatives of shape functions wrt. xsi
     """
     # ----- Derivatives of shape functions with respect to xsi -----
-    # TODO: fill inn values of the  shape functions gradients with respect to xsi
-
     Ndxsi = np.zeros(4)
     Ndxsi[0] = 0.25 * (1 + eta)
     Ndxsi[1] = 0.25 * (-1 - eta)
@@ -74,7 +70,6 @@ def quad4_shapefuncs_grad_eta(xsi, eta):
     Calculates derivatives of shape functions wrt. eta
     """
     # ----- Derivatives of shape functions with respect to eta -----
-    # TODO: fill inn values of the  shape functions gradients with respect to xsi
     Ndeta = np.zeros(4)
     Ndeta[0] = 0.25 * (1 + xsi)
     Ndeta[1] = 0.25 * (1 - xsi)
@@ -83,7 +78,7 @@ def quad4_shapefuncs_grad_eta(xsi, eta):
     return Ndeta
 
 def make_B_matrix(Nmatrix, number_of_nodes):
-
+    # Making the B-matrix (Strain displacement matrix) for an element with a given number of nodes
     Bmatrix = np.matrix(np.zeros((3, number_of_nodes*2)))
     for i in range(number_of_nodes):
         Bmatrix[:, i * 2]     = np.array([[Nmatrix[0, i]], [0], [Nmatrix[1, i]]])
@@ -91,6 +86,7 @@ def make_B_matrix(Nmatrix, number_of_nodes):
     return Bmatrix
 
 def make_N2_natrix(N, number_of_nodes):
+    # Making the N2-matrix for an element with a given number of nodes
     N2 = np.zeros((2,number_of_nodes*2))
     for i in range(number_of_nodes):
         N2[:, i * 2]     = np.array([N[i], 0])
@@ -144,23 +140,17 @@ def quad4e(ex, ey, D, thickness, eq=None):
             G = np.array([Ndxsi, Ndeta])  # Collect gradients of shape function evaluated at xi and eta
 
 
-            #TODO: Calculate Jacobian, inverse Jacobian and determinant of the Jacobian
-            J = np.matmul(G,H) #TODO: Correct this
-            #print("printing J: ", J)
+            # Calculating Jacobian, inverse Jacobian and determinant of the Jacobian
+            J = np.matmul(G,H)
             invJ = np.linalg.inv(J)  # Inverse of Jacobian
             detJ = np.linalg.det(J)  # Determinant of Jacobian
 
             dN = invJ @ G  # Derivatives of shape functions with respect to x and y
-            dNdx = dN[0]
-            dNdy = dN[1]
 
             # Strain displacement matrix calculated at position xsi, eta
-
-            #TODO: Fill out correct values for strain displacement matrix at current xsi and eta
             B = make_B_matrix(dN, 4)
 
-
-            #TODO: Fill out correct values for displacement interpolation xsi and eta
+            # Displacement interpolation matrix calculated at position xsi and eta
             N2 = make_N2_natrix(N1, 4)
 
             # Evaluates integrand at current integration points and adds to final solution
@@ -169,10 +159,9 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
     return Ke, fe  # Returns stiffness matrix and nodal force vector
 
-#---------------------------- quad9 -----------------------------------
+#----------------------------------------- quad9 ---------------------------------------------------
 
 def quad9_shapefuncs(xsi, eta):
-    
     """
     Calculates shape functions evaluated at xi, eta
     """
@@ -210,6 +199,7 @@ def quad9_shapefuncs_grad_eta(xsi, eta):
     """
     Calculates derivatives of shape functions wrt. eta
     """
+    # ----- Derivatives of shape functions with respect to eta -----
     Ndeta = np.zeros(9)
     Ndeta[0] = 0.25 * (xsi**2 + xsi) * (2*eta + 1)
     Ndeta[1] = 0.25 * (xsi**2 - xsi) * (2*eta + 1)
@@ -242,8 +232,6 @@ def quad9e(ex,ey,D,th,eq=None):
     Ke = np.matrix(np.zeros((18,18)))
     fe = np.matrix(np.zeros((18,1)))
 
-    # TODO: fill out missing parts (or reformulate completely)
-
     numGaussPoints = 3  # Number of integration points
     gp, gw = gauss_points(numGaussPoints)  # Get integration points and -weight
 
@@ -267,19 +255,17 @@ def quad9e(ex,ey,D,th,eq=None):
             detJ = np.linalg.det(J)  # Determinant of Jacobian
 
             dN = invJ @ G  # Derivatives of shape functions with respect to x and y
-            dNdx = dN[0]
-            dNdy = dN[1]
+            dNdx = dN[0] # Only used for the test below
+            dNdy = dN[1] # Only used for the test below
 
-            # Derivatives check
+            # Derivatives check. Only for us to catch if the derivatives are calculated wrong
             if np.abs(np.sum(dNdx)) > 0.00001 or np.abs(np.sum(dNdy)) > 0.00001: 
-                print(np.sum(dNdx), np.sum(dNdy))
+                print(np.sum(dNdx), np.sum(dNdy)) # prints only if derivatives do not sum up to around zero, and thus is wrong
             
             # Strain displacement matrix calculated at position xsi, eta
-
-            # TODO: Fill out correct values for strain displacement matrix at current xsi and eta
             B = make_B_matrix(dN, 9)
 
-            # TODO: Fill out correct values for displacement interpolation xsi and eta
+            # Displacement interpolation matrix calculated at position xsi and eta
             N2 = make_N2_natrix(N1, 9)
 
             # Evaluates integrand at current integration points and adds to final solution
@@ -290,9 +276,4 @@ def quad9e(ex,ey,D,th,eq=None):
         return Ke
     else:
         return Ke, fe
-
-
-
-
-
 
