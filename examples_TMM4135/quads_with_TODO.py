@@ -165,7 +165,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
             # Evaluates integrand at current integration points and adds to final solution
             Ke += (B.T) @ D @ B * detJ * t * gw[iGauss] * gw[jGauss]
-            #fe += (N2.T) @ f    * detJ * t * gw[iGauss] * gw[jGauss]
+            fe += (N2.T) @ f    * detJ * t * gw[iGauss] * gw[jGauss]
 
     return Ke, fe  # Returns stiffness matrix and nodal force vector
 
@@ -269,8 +269,11 @@ def quad9e(ex,ey,D,th,eq=None):
             dN = invJ @ G  # Derivatives of shape functions with respect to x and y
             dNdx = dN[0]
             dNdy = dN[1]
-            if np.abs(np.sum(dNdx)) > 0.0001 or np.abs(np.sum(dNdy)) > 0.0001: 
+
+            # Derivatives check
+            if np.abs(np.sum(dNdx)) > 0.00001 or np.abs(np.sum(dNdy)) > 0.00001: 
                 print(np.sum(dNdx), np.sum(dNdy))
+            
             # Strain displacement matrix calculated at position xsi, eta
 
             # TODO: Fill out correct values for strain displacement matrix at current xsi and eta

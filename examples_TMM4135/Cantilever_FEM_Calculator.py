@@ -11,7 +11,7 @@ import quads_with_TODO as quad
 import calfem.vis as cfv
 
 # Element Type
-numElementNodes = 9  # Valid numbers 3, 4, 6, 9
+numElementNodes = 6  # Valid numbers 3, 4, 6, 9
 
 # Choose which solution to use
 ourSolution = True
@@ -30,8 +30,8 @@ elif numElementNodes == 9:
 
 # Number of nodes: Should be odd numbers in order to handle
 
-numNodesX = 50
-numNodesY = 20
+numNodesX = 21
+numNodesY = 9
 
 # number of patches that will fit a 9 node element
 numPatchX = (numNodesX-1) // 2
@@ -45,9 +45,13 @@ numNodesY = numPatchY*2 + 1
 if numElementNodes == 6 or numElementNodes == 9:
     numElementsX = (numNodesX-1) // 2
     numElementsY = (numNodesY-1) // 2
+    print(numElementsX)
+    print(numElementsY)
 else:
     numElementsX = numNodesX - 1
     numElementsY = numNodesY - 1
+    print(numElementsX)
+    print(numElementsY)
 
 bDrawMesh = True
 
@@ -57,7 +61,7 @@ L = 12.5
 thickness = 0.1
 
 # Distributed load in x and y, load pr unit area
-eq = np.array([0., 1.0e5])
+eq = np.array([0., 1.0e3])
 # eq = np.array([0., 0.])
 # End load, Given as resultant
 
