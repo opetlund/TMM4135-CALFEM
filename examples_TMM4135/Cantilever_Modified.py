@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import calfem.core as cfc
 import triangles as tri
-import quads_with_TODO as quad
+import quads as quad
 import calfem.vis as cfv
 
 # Element Type
