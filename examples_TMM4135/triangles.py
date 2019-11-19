@@ -134,20 +134,7 @@ def tri6_shape_function_partials_x_and_y(zeta, ex, ey):
     return N6_px, N6_py
 
 
-def tri6_Jacobian_v1(zeta, ex, ey):
-
-    nx, ny = tri6_shape_function_partials_x_and_y(zeta, ex, ey)
-    J = np.zeros((2, 2))
-    for i in range(6):
-        J[0, 0] += nx[i] * ex[i]
-        J[0, 1] += nx[i] * ey[i]
-        J[1, 0] += ny[i] * ex[i]
-        J[1, 1] += ny[i] * ey[i]
-
-    return 0.5 * np.abs(np.linalg.det(J))
-
-
-def tri6_Bmatrix_v1(zeta, ex, ey):
+def tri6_Bmatrix(zeta, ex, ey):
 
     nx, ny = tri6_shape_function_partials_x_and_y(zeta, ex, ey)
 
@@ -176,10 +163,11 @@ def tri6_Kmatrix(ex, ey, D, th, eq=None):
 
     # Numerical integration with Gauss quadrature for triangle element
     for i in range(len(wInt)):
+
         zeta = zetaInt[:, i]
         weight = wInt[i]
 
-        B = tri6_Bmatrix_v1(zeta, ex, ey)
+        B = tri6_Bmatrix(zeta, ex, ey)
         Ke = Ke + weight * A * th * (B.T @ D @ B)
 
         if eq is not None:
@@ -197,6 +185,10 @@ def tri6_Kmatrix(ex, ey, D, th, eq=None):
         return Ke
     else:
         return Ke, fe
+
+
+def tri6e(ex, ey, D, th, eq=None):
+    return tri6_Kmatrix(ex, ey, D, th, eq)
 
 
 """
@@ -281,5 +273,14 @@ Not working
 #         return Ke, fe
 
 
-def tri6e(ex, ey, D, th, eq=None):
-    return tri6_Kmatrix(ex, ey, D, th, eq)
+# def tri6_Jacobian_v1(zeta, ex, ey):
+
+#     nx, ny = tri6_shape_function_partials_x_and_y(zeta, ex, ey)
+#     J = np.zeros((2, 2))
+#     for i in range(6):
+#         J[0, 0] += nx[i] * ex[i]
+#         J[0, 1] += nx[i] * ey[i]
+#         J[1, 0] += ny[i] * ex[i]
+#         J[1, 1] += ny[i] * ey[i]
+
+#     return 0.5 * np.abs(np.linalg.det(J))
