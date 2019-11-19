@@ -86,10 +86,16 @@ def make_B_matrix(Nmatrix, number_of_nodes):
 
     Bmatrix = np.matrix(np.zeros((3, number_of_nodes*2)))
     for i in range(number_of_nodes):
-        Bmatrix[:, i * 2] = np.array([[Nmatrix[0, i]], [0], [Nmatrix[1, i]]])
+        Bmatrix[:, i * 2]     = np.array([[Nmatrix[0, i]], [0], [Nmatrix[1, i]]])
         Bmatrix[:, i * 2 + 1] = np.array([[0], [Nmatrix[1, i]], [Nmatrix[0, i]]])
     return Bmatrix
 
+def make_N2_natrix(N, number_of_nodes):
+    N2 = np.zeros((2,number_of_nodes*2))
+    for i in range(number_of_nodes):
+        N2[:, i * 2]     = np.array([N[i], 0])
+        N2[:, i * 2 + 1] = np.array([0, N[i]])
+    return N2
 
 def quad4e(ex, ey, D, thickness, eq=None):
     """
@@ -155,24 +161,7 @@ def quad4e(ex, ey, D, thickness, eq=None):
 
 
             #TODO: Fill out correct values for displacement interpolation xsi and eta
-            N2 = np.zeros((2,8))
-            N4matrix = np.zeros((2,8))
-            # N4matrix =[[N4 , 0],
-            #            [0 , N4]]
-            N4matrix[0, :4] = quad4_shapefuncs(xsi, eta)
-            N4matrix[1, 4:] = quad4_shapefuncs(xsi, eta)
-            '''
-            Not correct yet as we do not have eu anv ev
-            def displacement(eu, ev):
-                # make N2
-                # assume eu as [u1, u2, u3, u4], and same for ev
-                uvvector = np.zeros(8)
-                uvvector[:4] = eu
-                uvvector[4:] = ev
-                # [u1, u2, ... , v3, v4]
-
-                return N4matrix @ (uvvector.T) #2x8-vector N2 = [[u(ksi, eta)], [v(ksi, eta)]]
-            '''
+            N2 = make_N2_natrix(N1, 4)
 
             # Evaluates integrand at current integration points and adds to final solution
             Ke += (B.T) @ D @ B * detJ * t * gw[iGauss] * gw[jGauss]
@@ -245,7 +234,11 @@ def quad9e(ex,ey,D,th,eq=None):
     :return mat Ke: element stiffness matrix [6 x 6]
     :return mat fe: consistent load vector [6 x 1] (if eq!=None)
     """
-
+    if eq is 0:
+        f = np.zeros((2,1))  # Create zero matrix for load if load is zero
+    else:
+        f = np.array([eq]).T  # Convert load to 2x1 matrix
+    
     Ke = np.matrix(np.zeros((18,18)))
     fe = np.matrix(np.zeros((18,1)))
 
@@ -276,35 +269,19 @@ def quad9e(ex,ey,D,th,eq=None):
             dN = invJ @ G  # Derivatives of shape functions with respect to x and y
             dNdx = dN[0]
             dNdy = dN[1]
-
+            if np.abs(np.sum(dNdx)) > 0.0001 or np.abs(np.sum(dNdy)) > 0.0001: 
+                print(np.sum(dNdx), np.sum(dNdy))
             # Strain displacement matrix calculated at position xsi, eta
 
             # TODO: Fill out correct values for strain displacement matrix at current xsi and eta
             B = make_B_matrix(dN, 9)
 
             # TODO: Fill out correct values for displacement interpolation xsi and eta
-            N2 = np.zeros((2, 8))
-            N4matrix = np.zeros((2, 8))
-            # N4matrix =[[N4 , 0],
-            #            [0 , N4]]
-            N4matrix[0, :4] = quad4_shapefuncs(xsi, eta)
-            N4matrix[1, 4:] = quad4_shapefuncs(xsi, eta)
-            '''
-            Not correct yet as we do not have eu anv ev
-            def displacement(eu, ev):
-                # make N2
-                # assume eu as [u1, u2, u3, u4], and same for ev
-                uvvector = np.zeros(8)
-                uvvector[:4] = eu
-                uvvector[4:] = ev
-                # [u1, u2, ... , v3, v4]
-
-                return N4matrix @ (uvvector.T) #2x8-vector N2 = [[u(ksi, eta)], [v(ksi, eta)]]
-            '''
+            N2 = make_N2_natrix(N1, 9)
 
             # Evaluates integrand at current integration points and adds to final solution
             Ke += (B.T) @ D @ B * detJ * th * gw[iGauss] * gw[jGauss]
-            # fe += (N2.T) @ f    * detJ * t * gw[iGauss] * gw[jGauss]
+            fe += (N2.T) @ f    * detJ * th * gw[iGauss] * gw[jGauss]
 
     if eq is None:
         return Ke
