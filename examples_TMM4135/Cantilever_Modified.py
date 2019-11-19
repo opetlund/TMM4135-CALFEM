@@ -12,9 +12,9 @@ import quads_with_TODO as quad
 import calfem.vis as cfv
 
 # Element Type
-numElementNodes = 3  # Valid numbers 3, 4, 6, 9
+numElementNodes = 9  # Valid numbers 3, 4, 6, 9
 
-n = 10
+n = 20
 numElement = np.zeros(n)
 displacementy = np.zeros(n)
 displacementx = np.zeros(n)
@@ -287,5 +287,6 @@ plt.figure(2)
 plt.plot(numElement, displacementx, label="Displacement in x-diretion")
 plt.xlabel("Number of elements")
 plt.ylabel("Displacement")
+#plt.ylim([0, .1])
 plt.title("Convergence of displacement in x-direction with {}-node element".format(numElementNodes))
 plt.show()
