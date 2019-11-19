@@ -191,7 +191,7 @@ def tri6_Kmatrix(ex, ey, D, th, eq=None):
                 N2mat[0, j * 2] = N6[j]
                 N2mat[1, j * 2 + 1] = N6[j]
 
-            fe += N2mat.T @ fvec * A * weight
+            fe += N2mat.T @ fvec * A * weight * th
 
     if eq is None:
         return Ke

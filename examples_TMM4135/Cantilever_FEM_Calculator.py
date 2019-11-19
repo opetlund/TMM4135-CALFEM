@@ -57,14 +57,14 @@ L = 12.5
 thickness = 0.1
 
 # Distributed load in x and y, load pr unit area
-eq = np.array([0., 1.0e3])
-eq = np.array([0., 0.])
+eq = np.array([0., 1.0e5])
+# eq = np.array([0., 0.])
 # End load, Given as resultant
 
-endLoadXY = np.array([0.0, 3.0e6])
-#endLoadXY = np.array([3.0e6,0])
+endLoadXY = np.array([3.0e6, 3.0e6])
+# endLoadXY = np.array([3.0e6,0])
 # endLoadXY = np.array([4.2e9,0.0]) # Should give unit disp at Poisson = 0
-
+# endLoadXY = np.array([0, 0])
 
 eqTotal = eq * L * H * thickness  # Total load for plotting purpose
 
@@ -233,6 +233,7 @@ nodMiddle = numNodesY//2 + 1  # Mid nod on right edge
 xC = r[-(nodMiddle*2), 0]  # 2 dofs per node, so this is the middle dof on end
 # 2 dofs per node, so this is the middle dof on end
 yC = r[-(nodMiddle*2)+1, 0]
+print("Element: ", numElementNodes)
 print(
     "Displacement center node right end,  x:{:12.3e}   y:{:12.3e}".format(xC, yC))
 

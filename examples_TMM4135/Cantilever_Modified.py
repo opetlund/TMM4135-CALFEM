@@ -14,9 +14,11 @@ import calfem.vis as cfv
 # Element Type
 numElementNodes = 3  # Valid numbers 3, 4, 6, 9
 
-n = 20
+n = 10
 numElement = np.zeros(n)
-displacement = np.zeros(n)
+displacementy = np.zeros(n)
+displacementx = np.zeros(n)
+
 for index in range(n):
     # Choose which solution to use
     ourSolution = True
@@ -66,7 +68,7 @@ for index in range(n):
     # eq = np.array([0., 0.])
     # End load, Given as resultant
 
-    endLoadXY = np.array([0.0, 3.0e6])
+    endLoadXY = np.array([3.0e6, 3.0e6])
     # endLoadXY = np.array([3.0e6,0])
     # endLoadXY = np.array([4.2e9,0.0]) # Should give unit disp at Poisson = 0
 
@@ -273,6 +275,17 @@ for index in range(n):
             R0Sum[0], R0Sum[1]))
 
     numElement[index] = numElements
-    displacement[index] = yC
-plt.plot(numElement, displacement)
+    displacementy[index] = yC
+    displacementx[index] = xC
+plt.figure(1)
+plt.plot(numElement, displacementy)
+plt.xlabel("Number of elements")
+plt.ylabel("Displacement")
+plt.title("Convergence of displacement in y-direction with {}-node element".format(numElementNodes))
+plt.show()
+plt.figure(2)
+plt.plot(numElement, displacementx, label="Displacement in x-diretion")
+plt.xlabel("Number of elements")
+plt.ylabel("Displacement")
+plt.title("Convergence of displacement in x-direction with {}-node element".format(numElementNodes))
 plt.show()
